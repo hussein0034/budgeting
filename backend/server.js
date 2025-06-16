@@ -9,7 +9,10 @@ dotenv.config();
 const app = express();
 
 // Middleware
-app.use(cors({ origin: 'https://budgeting-husseintarhinis-projects.vercel.app' }));
+app.use(cors({ 
+  origin: ['https://budgeting-hu3e.onrender.com', 'http://localhost:3000'],
+  credentials: true
+}));
 app.use(express.json());
 
 // MongoDB Connection with fallback
