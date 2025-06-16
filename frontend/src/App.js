@@ -1,43 +1,63 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useAuth } from './contexts/AuthContext';
 import './App.css';
 
 function App() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const { user, isAuthenticated, login, logout } = useAuth();
 
-  const handleSubmit = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // TODO: Add login logic here
-    console.log('Login attempt with:', { email, password });
+    const email = e.target.email.value;
+    const password = e.target.password.value;
+    try {
+      await login(email, password);
+    } catch (error) {
+      alert(error.message);
+    }
   };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="App">
+        <div className="login-container">
+          <h1>Budgeting App</h1>
+          <form onSubmit={handleLogin} className="login-form">
+            <div className="form-group">
+              <label htmlFor="email">Email:</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="password">Password:</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                required
+              />
+            </div>
+            <button type="submit" className="login-button">Login</button>
+          </form>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="App">
-      <div className="login-container">
-        <h1>Budgeting App</h1>
-        <form onSubmit={handleSubmit} className="login-form">
-          <div className="form-group">
-            <label htmlFor="email">Email:</label>
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="password">Password:</label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          <button type="submit" className="login-button">Login</button>
-        </form>
+      <div className="dashboard-container">
+        <header className="dashboard-header">
+          <h1>Welcome, {user?.name || 'User'}!</h1>
+          <button onClick={logout} className="logout-button">Logout</button>
+        </header>
+        <div className="dashboard-content">
+          <h2>Your Budget Dashboard</h2>
+          {/* Add your dashboard content here */}
+        </div>
       </div>
     </div>
   );
